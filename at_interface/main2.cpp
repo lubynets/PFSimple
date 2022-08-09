@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
 
-  const bool make_plain_tree{false};
+  const bool make_plain_tree{true};
 
   const std::string& filename = argv[1];
 

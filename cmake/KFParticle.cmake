@@ -3,8 +3,8 @@ set(KFParticle_INCLUDE_DIR ${KFParticle_INSTALL_DIR}/include)
 set(KFParticle_LIBRARY_DIR ${KFParticle_INSTALL_DIR}/lib)
 
 ExternalProject_Add(KFParticle_Ext
-        GIT_REPOSITORY  "https://git.cbm.gsi.de/pwg-c2f/analysis/KFParticle.git"
-        GIT_TAG         "cmake"
+        GIT_REPOSITORY  "https://github.com/lubynets/KFParticle.git"
+        GIT_TAG         "chi2_num_den"
         UPDATE_DISCONNECTED ${UPDATE_DISCONNECTED}
         SOURCE_DIR      "${EXTERNAL_DIR}/KFParticle_src"
         BINARY_DIR      "${EXTERNAL_DIR}/KFParticle_build"

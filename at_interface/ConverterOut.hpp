@@ -73,9 +73,18 @@ class ConverterOut : public AnalysisTree::Task {
   int pt_err_field_id_{-1};
 
   int chi2prim_field_id_{-1};
+  int chi2prim_first_vec2_field_id_{-1};
+  int chi2prim_first_det_field_id_{-1};
+  int chi2prim_first_detinv_field_id_{-1};
+  int chi2prim_second_vec2_field_id_{-1};
+  int chi2prim_second_det_field_id_{-1};
+  int chi2prim_second_detinv_field_id_{-1};
   int distance_field_id_{-1};
   int cosine_field_id_{-1};
   int chi2geo_field_id_{-1};
+  int chi2geo_vec2_field_id_{-1};
+  int chi2geo_det_field_id_{-1};
+  int chi2geo_detinv_field_id_{-1};  
 
   int chi2geo_sm_field_id_{-1};
   int chi2topo_sm_field_id_{-1};

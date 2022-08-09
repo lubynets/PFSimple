@@ -31,6 +31,13 @@ void ConverterOut::CopyParticle(const OutputContainer& kf_particle, AnalysisTree
     particle.SetField(kf_particle.GetCos(i), cosine_field_id_ + i);
     particle.SetField(kf_particle.GetDaughterIds().at(i), daughter_id_field_id_ + i);
   }
+  
+  particle.SetField(kf_particle.GetChi2PrimVec2(0), chi2prim_first_vec2_field_id_);
+  particle.SetField(kf_particle.GetChi2PrimDet(0), chi2prim_first_det_field_id_);
+  particle.SetField(kf_particle.GetChi2PrimDetInv(0), chi2prim_first_detinv_field_id_);
+  particle.SetField(kf_particle.GetChi2PrimVec2(1), chi2prim_second_vec2_field_id_);
+  particle.SetField(kf_particle.GetChi2PrimDet(1), chi2prim_second_det_field_id_);
+  particle.SetField(kf_particle.GetChi2PrimDetInv(1), chi2prim_second_detinv_field_id_);  
 
   particle.SetField(kf_particle.GetDistance(), distance_field_id_);
 
@@ -48,6 +55,10 @@ void ConverterOut::CopyParticle(const OutputContainer& kf_particle, AnalysisTree
   particle.SetField(kf_particle.GetLdL(), chi2geo_field_id_ + 2);
   particle.SetField(kf_particle.GetChi2Topo(0), chi2geo_field_id_ + 3);
   particle.SetField(kf_particle.GetCosineTopo(0), chi2geo_field_id_ + 4);
+  
+  particle.SetField(kf_particle.GetChi2GeoVec2(), chi2geo_vec2_field_id_);
+  particle.SetField(kf_particle.GetChi2GeoDet(), chi2geo_det_field_id_);
+  particle.SetField(kf_particle.GetChi2GeoDetInv(), chi2geo_detinv_field_id_);
 }
 
 void ConverterOut::Exec() {
@@ -121,11 +132,20 @@ void ConverterOut::Init() {
   } else if (decay_.GetNDaughters() == 2) {
     out_particles.AddFields<int>({"daughter1_id", "daughter2_id"}, "");
     out_particles.AddFields<float>({"chi2_prim_first", "chi2_prim_second"}, "");
+    out_particles.AddField<float>("chi2_prim_first_vec2", "");
+    out_particles.AddField<float>("chi2_prim_first_det", "");
+    out_particles.AddField<float>("chi2_prim_first_detinv", "");
+    out_particles.AddField<float>("chi2_prim_second_vec2", "");
+    out_particles.AddField<float>("chi2_prim_second_det", "");
+    out_particles.AddField<float>("chi2_prim_second_detinv", "");
     out_particles.AddField<float>("distance", "Distance between the particles, cm");
     out_particles.AddFields<float>({"cosine_first", "cosine_second"}, "Cos between mother and daughter particle");
   }
 
   out_particles.AddFields<float>({"chi2_geo", "l", "l_over_dl", "chi2_topo", "cosine_topo"}, "");
+  out_particles.AddField<float>("chi2_geo_vec2", "");
+  out_particles.AddField<float>("chi2_geo_det", "");
+  out_particles.AddField<float>("chi2_geo_detinv", "");
 
   AnalysisTree::BranchConfig LambdaSimBranch(out_branch_sim, AnalysisTree::DetType::kParticle);
 
@@ -228,10 +248,21 @@ void ConverterOut::InitIndexes() {
   chi2prim_field_id_ = out_branch_reco.GetFieldId("chi2_prim_first");
   distance_field_id_ = out_branch_reco.GetFieldId("distance");
   cosine_field_id_ = out_branch_reco.GetFieldId("cosine_first");
-
+  
+  chi2prim_first_vec2_field_id_ = out_branch_reco.GetFieldId("chi2_prim_first_vec2");
+  chi2prim_first_det_field_id_ = out_branch_reco.GetFieldId("chi2_prim_first_det");
+  chi2prim_first_detinv_field_id_ = out_branch_reco.GetFieldId("chi2_prim_first_detinv");
+  chi2prim_second_vec2_field_id_ = out_branch_reco.GetFieldId("chi2_prim_second_vec2");
+  chi2prim_second_det_field_id_ = out_branch_reco.GetFieldId("chi2_prim_second_det");
+  chi2prim_second_detinv_field_id_ = out_branch_reco.GetFieldId("chi2_prim_second_detinv");
+  
   chi2geo_sm_field_id_ = out_branch_reco.GetFieldId("chi2_geo_sm1");
   chi2topo_sm_field_id_ = out_branch_reco.GetFieldId("chi2_topo_sm1");
   cosine_topo_sm_field_id_ = out_branch_reco.GetFieldId("cosine_topo_sm1");
 
   chi2geo_field_id_ = out_branch_reco.GetFieldId("chi2_geo");
+  
+  chi2geo_vec2_field_id_ = out_branch_reco.GetFieldId("chi2_geo_vec2");
+  chi2geo_det_field_id_ = out_branch_reco.GetFieldId("chi2_geo_det");
+  chi2geo_detinv_field_id_ = out_branch_reco.GetFieldId("chi2_geo_detinv");
 }
