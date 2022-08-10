@@ -111,7 +111,9 @@ KFParticleSIMD SimpleFinder::ConstructMother(const std::vector<KFParticle>& trac
   return mother;
 }
 
-std::array<float, 4> SimpleFinder::CalculateChiToPrimaryVertex(const KFParticle& track, Pdg_t pid) const {
+std::tuple<std::array<float, 4>,
+           std::array<float, 3>,
+           std::array<float, 6>> SimpleFinder::CalculateChiToPrimaryVertex(const KFParticle& track, Pdg_t pid) const {
   // SIMD'ized version
   KFParticle tmpPart = track;
   tmpPart.SetPDG(pid);
@@ -122,8 +124,15 @@ std::array<float, 4> SimpleFinder::CalculateChiToPrimaryVertex(const KFParticle&
   const float_v point[3] = {prim_vx_Simd.X(), prim_vx_Simd.Y(), prim_vx_Simd.Z()};
   tmpPartSIMD.TransportToPoint(point);
 
-  std::array<float_v, 4> chi2vec = tmpPartSIMD.GetDeviationFromVertexNumDen(prim_vx_Simd);
-  return (std::array<float, 4>){chi2vec.at(0)[0], chi2vec.at(1)[0], chi2vec.at(2)[0], chi2vec.at(3)[0]};
+  std::tuple<std::array<float_v, 4>,
+             std::array<float_v, 3>,
+             std::array<float_v, 6>> chi2vec = tmpPartSIMD.GetDeviationFromVertexNumDen(prim_vx_Simd);
+
+  return (std::tuple<std::array<float, 4>,
+                     std::array<float, 3>,
+                     std::array<float, 6>>) { {std::get<0>(chi2vec).at(0)[0], std::get<0>(chi2vec).at(1)[0], std::get<0>(chi2vec).at(2)[0], std::get<0>(chi2vec).at(3)[0]},
+                                              {std::get<1>(chi2vec).at(0)[0], std::get<1>(chi2vec).at(1)[0], std::get<1>(chi2vec).at(2)[0]},
+                                              {std::get<2>(chi2vec).at(0)[0], std::get<2>(chi2vec).at(1)[0], std::get<2>(chi2vec).at(2)[0], std::get<2>(chi2vec).at(3)[0], std::get<2>(chi2vec).at(4)[0], std::get<2>(chi2vec).at(5)[0]} };
 }
 
 std::vector<int> SimpleFinder::GetIndexes(const Daughter& daughter) {
@@ -183,8 +192,8 @@ void SimpleFinder::SetKFParticleEnergy(KFParticle& particle, int pdg) const {
 
 bool SimpleFinder::IsGoodDaughter(const KFParticle& track, const Daughter& daughter) {
   int id = daughter.GetId();
-  std::array<float, 4> chi2prim_array = CalculateChiToPrimaryVertex(track, daughter.GetPdgHypo());
-  values_.chi2_prim.at(id) = chi2prim_array.at(0);
+//   std::array<float, 4> chi2prim_array = CalculateChiToPrimaryVertex(track, daughter.GetPdgHypo());
+  values_.chi2_prim.at(id) = std::get<0>(CalculateChiToPrimaryVertex(track, daughter.GetPdgHypo())).at(0);
 //   values_.chi2_prim_num.at(id) = chi2prim_array.at(1);
 //   values_.chi2_prim_den.at(id) = chi2prim_array.at(2);
   if (values_.chi2_prim.at(id) < daughter.GetCutChi2Prim() || std::isnan(values_.chi2_prim.at(id))) { return false; }
@@ -227,6 +236,10 @@ bool SimpleFinder::IsGoodMother(const KFParticleSIMD& kf_mother, const Mother& m
   values_.chi2_geo_vec2 = kf_mother.Vec2()[0];
   values_.chi2_geo_det = kf_mother.Det()[0];
   values_.chi2_geo_detinv = kf_mother.DetInv()[0];
+  for(int i=0; i<3; i++)
+    values_.chi2_geo_vec[i] = kf_mother.GetParameter(i)[0];
+  for(int i=0; i<6; i++)
+    values_.chi2_geo_cov[i] = kf_mother.GetCovariance(i)[0];
   if (values_.chi2_geo[id_mother] > mother.GetCutChi2Geo()[id_mother] || std::isnan(values_.chi2_geo[id_mother])) { return false; }
   return true;
 }
@@ -402,10 +415,20 @@ void SimpleFinder::ReconstructDecay(const Decay& decay) {
 
 void SimpleFinder::FillDaughtersInfo(const std::vector<KFParticle>& tracks, const std::vector<Pdg_t>& pdgs) {
   for (size_t i = 0; i < tracks.size(); ++i) {
-    std::array<float, 4> chi2prim_array = CalculateChiToPrimaryVertex(tracks.at(i), pdgs.at(i));
-    values_.chi2_prim[i] = chi2prim_array.at(0);
-    values_.chi2_prim_vec2[i] = chi2prim_array.at(1);
-    values_.chi2_prim_det[i] = chi2prim_array.at(2);
-    values_.chi2_prim_detinv[i] = chi2prim_array.at(3);    
+    std::tuple<std::array<float, 4>,
+               std::array<float, 3>,
+               std::array<float, 6>> chi2prim_tuple = CalculateChiToPrimaryVertex(tracks.at(i), pdgs.at(i));
+               
+    values_.chi2_prim[i] = std::get<0>(chi2prim_tuple).at(0);
+    values_.chi2_prim_vec2[i] = std::get<0>(chi2prim_tuple).at(1);
+    values_.chi2_prim_det[i] = std::get<0>(chi2prim_tuple).at(2);
+    values_.chi2_prim_detinv[i] = std::get<0>(chi2prim_tuple).at(3);
+    
+    for(int j=0; j<3; j++)
+      values_.chi2_prim_vec[i].at(j) = std::get<1>(chi2prim_tuple).at(j);
+   
+    for(int j=0; j<6; j++)
+      values_.chi2_prim_cov[i].at(j) = std::get<2>(chi2prim_tuple).at(j);
+    
   }
 }

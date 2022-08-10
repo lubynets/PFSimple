@@ -54,11 +54,15 @@ class OutputContainer {
   [[nodiscard]] float GetChi2PrimVec2(int i) const { return values_.chi2_prim_vec2[i]; }
   [[nodiscard]] float GetChi2PrimDet(int i) const { return values_.chi2_prim_det[i]; }
   [[nodiscard]] float GetChi2PrimDetInv(int i) const { return values_.chi2_prim_detinv[i]; }
+  [[nodiscard]] float GetChi2PrimVec(int i, int j) const { return values_.chi2_prim_vec[i][j]; }
+  [[nodiscard]] float GetChi2PrimCov(int i, int j) const { return values_.chi2_prim_cov[i][j]; }
   [[nodiscard]] float GetCos(int i) const { return values_.cos[i]; }
   [[nodiscard]] float GetChi2Geo(int i) const { return values_.chi2_geo[i]; }
   [[nodiscard]] float GetChi2GeoVec2() const { return values_.chi2_geo_vec2; }
   [[nodiscard]] float GetChi2GeoDet() const { return values_.chi2_geo_det; }
   [[nodiscard]] float GetChi2GeoDetInv() const { return values_.chi2_geo_detinv; }
+  [[nodiscard]] float GetChi2GeoVec(int j) const { return values_.chi2_geo_vec.at(j); }
+  [[nodiscard]] float GetChi2GeoCov(int j) const { return values_.chi2_geo_cov.at(j); }
   [[nodiscard]] float GetChi2Topo(int i) const { return values_.chi2_topo[i]; }
   [[nodiscard]] float GetDistance() const { return values_.distance; }
   [[nodiscard]] float GetDistanceToSV() const { return values_.distance_sv; }

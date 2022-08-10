@@ -4,7 +4,7 @@ set(KFParticle_LIBRARY_DIR ${KFParticle_INSTALL_DIR}/lib)
 
 ExternalProject_Add(KFParticle_Ext
         GIT_REPOSITORY  "https://github.com/lubynets/KFParticle.git"
-        GIT_TAG         "17efe536c47118b99e47df6c2b2cf930214aa5fb"
+        GIT_TAG         "cddea69761bdb174d7e249237c2414d3cb37efbe"
         UPDATE_DISCONNECTED ${UPDATE_DISCONNECTED}
         SOURCE_DIR      "${EXTERNAL_DIR}/KFParticle_src"
         BINARY_DIR      "${EXTERNAL_DIR}/KFParticle_build"

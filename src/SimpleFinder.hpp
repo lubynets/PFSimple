@@ -90,7 +90,9 @@ class SimpleFinder {
 
   void CalculateParamsInPCA(const KFParticle& track1, int pid1, const KFParticle& track2, int pid2);
   void CalculateParamsInSV(const KFParticle& track, int pid, int id);
-  std::array<float, 4> CalculateChiToPrimaryVertex(const KFParticle& track, Pdg_t pid) const;
+  std::tuple<std::array<float, 4>,
+             std::array<float, 3>,
+             std::array<float, 6>> CalculateChiToPrimaryVertex(const KFParticle& track, Pdg_t pid) const;
   float CalculateCosTopo(const KFParticleSIMD& mother) const;
   static float CalculateDistanceBetweenParticles(const Parameters_t& parameters);
   float CalculateDistanceToSV(int id) const;

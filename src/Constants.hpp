@@ -14,6 +14,8 @@ struct SelectionValues {
   std::array<float, 3> chi2_prim_det{{-1.f, -1.f, -1.f}};
   std::array<float, 3> chi2_prim_detinv{{-1.f, -1.f, -1.f}};
   std::array<float, 3> cos{{-1.f, -1.f, -1.f}};            ///< cosine of angle between daughter track and mother particle
+  std::array<std::array<float, 3>, 3> chi2_prim_vec{{{-1.f, -1.f, -1.f}, {-1.f, -1.f, -1.f}, {-1.f, -1.f, -1.f}}};
+  std::array<std::array<float, 6>, 3> chi2_prim_cov{{{-1.f, -1.f, -1.f, -1.f, -1.f, -1.f}, {-1.f, -1.f, -1.f, -1.f, -1.f, -1.f}, {-1.f, -1.f, -1.f, -1.f, -1.f, -1.f}}};
   float distance{-1.f};                                    ///< Distance between daughter tracks in their closest approach
   float distance_sv{-1.f};                                 ///< Distance between daughter track and SV
   float l{-1.f};                                           ///< Lenght of interpolated track from secondary to primary vertex
@@ -23,6 +25,8 @@ struct SelectionValues {
   float chi2_geo_vec2{-1.};
   float chi2_geo_det{-1.};
   float chi2_geo_detinv{-1.};
+  std::array<float, 3> chi2_geo_vec{-1.f};
+  std::array<float, 6> chi2_geo_cov{-1.f};
   std::array<float, 4> chi2_topo{{-1.f, -1.f, -1.f, -1.f}};///< \f$\chi^2\f$ of the mother's track to the PV (prim & sec mothers)
   std::array<float, 4> cos_topo{{-1.f, -1.f, -1.f, -1.f}}; ///< Cosine of the angle between reconstructed mother's momentum and mother's radius vector beginning in the PV (prim & sec mothers)
 
