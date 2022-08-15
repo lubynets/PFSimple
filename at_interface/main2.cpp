@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
 
-  const bool make_plain_tree{true};
+  const bool make_plain_tree{false};
 
   const std::string& filename = argv[1];
 
@@ -36,17 +36,17 @@ int main(int argc, char** argv) {
 
   // ******** default kfpf cuts *************
 
-  //   const int pid_mode = 0;    // no-PID
-  //   Daughter proton(2212, {1});
-  //   Daughter pion(-211, {-1});
-  //   Daughter pion_plus(211, {1});
-  //   Daughter pion_minus(-211, {-1});
+    const int pid_mode = 0;    // no-PID
+    Daughter proton(2212, {1});
+    Daughter pion(-211, {-1});
+    Daughter pion_plus(211, {1});
+    Daughter pion_minus(-211, {-1});
 
-  const int pid_mode = 1;// MC-PID
-  Daughter proton(2212);
-  Daughter pion(-211);
-  Daughter pion_plus(211);
-  Daughter pion_minus(-211);
+//   const int pid_mode = 1;// MC-PID
+//   Daughter proton(2212);
+//   Daughter pion(-211);
+//   Daughter pion_plus(211);
+//   Daughter pion_minus(-211);
 
   //   const int pid_mode = 2;
   //   Daughter proton(2212, {2212, 2});// for TOF-PID
@@ -75,13 +75,13 @@ int main(int argc, char** argv) {
   //   Daughter proton(2212);
   //   Daughter pion(-211);
   //   Mother lambda(3122);
-  //   proton.CancelCuts();
-  //   pion.CancelCuts();
-  //   lambda.CancelCuts();
+    proton.CancelCuts();
+    pion.CancelCuts();
+    lambda.CancelCuts();
   //   // ***************************************
 
   Decay lambda_pi_p("lambda", lambda, {pion, proton});
-  Decay kshort_pi_pi("kshort", kshort, {pion_minus, pion_plus});
+//   Decay kshort_pi_pi("kshort", kshort, {pion_minus, pion_plus});
 
   auto* man = TaskManager::GetInstance();
   man->SetOutputName("PFSimpleOutput.root", "pTree");
@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
 
   auto* pf_task = new PFSimpleTask();
   pf_task->SetInTask(in_converter);
-  pf_task->SetDecays({lambda_pi_p, kshort_pi_pi});
+  pf_task->SetDecays({lambda_pi_p});
 
   auto* out_converter = new ConverterOut();
   out_converter->SetSimEventHeaderName("SimEventHeader");
