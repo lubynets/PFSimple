@@ -34,6 +34,7 @@ class ConverterOut : public AnalysisTree::Task {
   void InitIndexes();
   void MatchWithMc(AnalysisTree::Particle& particle);
   int GetMothersSimId(AnalysisTree::Particle& lambdarec);
+  int DeterminBGType(AnalysisTree::Particle& lambdarec);
   int DetermineGeneration(int mother_sim_id);
 
   // output branches
@@ -68,6 +69,7 @@ class ConverterOut : public AnalysisTree::Task {
   int x_field_id_{-1};
   int daughter_id_field_id_{-1};
   int generation_field_id_{-1};
+  int bg_type_field_id_{-1};
   int g4process_field_id_{-1};
   int g4process_field_id_w_{-1};
   int pt_err_field_id_{-1};

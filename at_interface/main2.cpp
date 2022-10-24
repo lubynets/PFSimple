@@ -36,17 +36,17 @@ int main(int argc, char** argv) {
 
   // ******** default kfpf cuts *************
 
-  //   const int pid_mode = 0;    // no-PID
-  //   Daughter proton(2212, {1});
-  //   Daughter pion(-211, {-1});
-  //   Daughter pion_plus(211, {1});
-  //   Daughter pion_minus(-211, {-1});
+    const int pid_mode = 0;    // no-PID
+    Daughter proton(2212, {1});
+    Daughter pion(-211, {-1});
+    Daughter pion_plus(211, {1});
+    Daughter pion_minus(-211, {-1});
 
-  const int pid_mode = 1;// MC-PID
-  Daughter proton(2212);
-  Daughter pion(-211);
-  Daughter pion_plus(211);
-  Daughter pion_minus(-211);
+//   const int pid_mode = 1;// MC-PID
+//   Daughter proton(2212);
+//   Daughter pion(-211);
+//   Daughter pion_plus(211);
+//   Daughter pion_minus(-211);
 
   //   const int pid_mode = 2;
   //   Daughter proton(2212, {2212, 2});// for TOF-PID

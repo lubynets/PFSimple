@@ -131,6 +131,7 @@ void ConverterOut::Init() {
 
   if (mc_particles_) {
     out_particles.AddField<int>("generation", "");
+    out_particles.AddField<int>("bg_type", "type of background");
     LambdaSimBranch.AddField<int>("geant_process_id", "");
   }
 
@@ -170,6 +171,79 @@ int ConverterOut::GetMothersSimId(AnalysisTree::Particle& lambdarec) {
   return mother_sim_id.at(0);
 }
 
+int ConverterOut::DeterminBGType(AnalysisTree::Particle& lambdarec) {
+  const int daughter_sim_id_1 = rec_to_mc_->GetMatch(lambdarec.GetField<int>(daughter_id_field_id_));
+  const int daughter_sim_id_2 = rec_to_mc_->GetMatch(lambdarec.GetField<int>(daughter_id_field_id_ + 1));
+
+  if(daughter_sim_id_1<0 && daughter_sim_id_2<0)
+    return 30;
+
+  if(daughter_sim_id_1<0 && daughter_sim_id_2>=0) {
+    const int mother_sim_id_2 = mc_particles_->GetChannel(daughter_sim_id_2).GetField<int>(mother_id_field_id_);
+
+    if(mother_sim_id_2<0)
+      return 321;
+
+    const int g4process = mc_particles_->GetChannel(daughter_sim_id_2).GetField<int>(g4process_field_id_);
+    if(g4process != 4)
+      return 324;
+
+    const int mother_pdg = mc_particles_->GetChannel(mother_sim_id_2).GetPid();
+    if(mother_pdg != lambdarec.GetPid())
+      return 323;
+    else
+      return 322;
+  }
+
+  if(daughter_sim_id_1>=0 && daughter_sim_id_2<0) {
+    const int mother_sim_id_1 = mc_particles_->GetChannel(daughter_sim_id_1).GetField<int>(mother_id_field_id_);
+
+    if(mother_sim_id_1<0)
+      return 311;
+
+    const int g4process = mc_particles_->GetChannel(daughter_sim_id_1).GetField<int>(g4process_field_id_);
+    if(g4process != 4)
+      return 314;
+
+    const int mother_pdg = mc_particles_->GetChannel(mother_sim_id_1).GetPid();
+    if(mother_pdg != lambdarec.GetPid())
+      return 313;
+    else
+      return 312;
+  }
+
+  if(daughter_sim_id_1>=0 && daughter_sim_id_2>=0) {
+    const int mother_sim_id_1 = mc_particles_->GetChannel(daughter_sim_id_1).GetField<int>(mother_id_field_id_);
+    const int mother_sim_id_2 = mc_particles_->GetChannel(daughter_sim_id_2).GetField<int>(mother_id_field_id_);
+
+    if(mother_sim_id_1<0 && mother_sim_id_2<0)
+      return 20;
+
+    if(mother_sim_id_1<0 && mother_sim_id_2>=0)
+      return 21;
+
+    if(mother_sim_id_1>=0 && mother_sim_id_2<0)
+      return 22;
+
+    if(mother_sim_id_1>=0 && mother_sim_id_2>=0) {
+      if(mother_sim_id_1 != mother_sim_id_2)
+        return 11;
+
+      const int g4process = mc_particles_->GetChannel(daughter_sim_id_1).GetField<int>(g4process_field_id_);
+      if(g4process != 4)
+        return 13;
+
+      const int mother_pdg = mc_particles_->GetChannel(mother_sim_id_1).GetPid();
+      if(mother_pdg != lambdarec.GetPid())
+        return 12;
+      else
+        return 0;
+    }
+  }
+
+  return -1;
+}
+
 int ConverterOut::DetermineGeneration(int mother_sim_id) {
   int generation = 0;
   int older_id = mother_sim_id;
@@ -187,8 +261,10 @@ void ConverterOut::MatchWithMc(AnalysisTree::Particle& lambdarec) {
   auto out_config = AnalysisTree::TaskManager::GetInstance()->GetConfig();
 
   int mother_id = GetMothersSimId(lambdarec);
+  int bg = DeterminBGType(lambdarec);
   int generation = DetermineGeneration(mother_id);
   lambdarec.SetField(generation, generation_field_id_);
+  lambdarec.SetField(bg, bg_type_field_id_);
 
   if (generation < 1) return;
 
@@ -222,6 +298,7 @@ void ConverterOut::InitIndexes() {
     mother_id_field_id_ = branch_conf_sim.GetFieldId("mother_id");
     g4process_field_id_ = branch_conf_sim.GetFieldId("geant_process_id");
     generation_field_id_ = out_branch_reco.GetFieldId("generation");
+    bg_type_field_id_ = out_branch_reco.GetFieldId("bg_type");
     g4process_field_id_w_ = out_branch_sim.GetFieldId("geant_process_id");
   }
 
