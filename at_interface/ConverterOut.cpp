@@ -189,8 +189,14 @@ int ConverterOut::DeterminBGType(AnalysisTree::Particle& lambdarec) {
       return 324;
 
     const int mother_pdg = mc_particles_->GetChannel(mother_sim_id_2).GetPid();
-    if(mother_pdg != lambdarec.GetPid())
-      return 323;
+    if(mother_pdg != lambdarec.GetPid()) {
+      if(mother_pdg == 3122 || mother_pdg == 310)
+        return 3231;
+      else
+        return 3232;
+//       if(mother_pdg != 3122 && mother_pdg != 310)
+//         std::cout << mother_pdg <<  "\n";
+    }
     else
       return 322;
   }
@@ -206,8 +212,14 @@ int ConverterOut::DeterminBGType(AnalysisTree::Particle& lambdarec) {
       return 314;
 
     const int mother_pdg = mc_particles_->GetChannel(mother_sim_id_1).GetPid();
-    if(mother_pdg != lambdarec.GetPid())
-      return 313;
+    if(mother_pdg != lambdarec.GetPid()) {
+      if(mother_pdg == 3122 || mother_pdg == 310)
+        return 3131;
+      else
+        return 3132;
+//       if(mother_pdg != 3122 && mother_pdg != 310)
+//         std::cout << mother_pdg << "\n";
+    }
     else
       return 312;
   }
@@ -234,8 +246,14 @@ int ConverterOut::DeterminBGType(AnalysisTree::Particle& lambdarec) {
         return 13;
 
       const int mother_pdg = mc_particles_->GetChannel(mother_sim_id_1).GetPid();
-      if(mother_pdg != lambdarec.GetPid())
-        return 12;
+      if(mother_pdg != lambdarec.GetPid()) {
+        if(mother_pdg == 3122 || mother_pdg == 310)
+          return 121;
+        else
+          return 122;
+//         if(mother_pdg != 3122 && mother_pdg != 310)
+//          std::cout << mother_pdg << "\n";
+      }
       else
         return 0;
     }
