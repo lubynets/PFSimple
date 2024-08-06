@@ -81,7 +81,20 @@ class ConverterOut : public AnalysisTree::Task {
   // field ids of input simulated mother
   int mother_id_field_id_{-1};
 
-  int x_field_id_{-1};
+  int x_decay_field_id_{-1};
+  int y_decay_field_id_{-1};
+  int z_decay_field_id_{-1};
+  int x_pca_field_id_{-1};
+  int y_pca_field_id_{-1};
+  int z_pca_field_id_{-1};
+
+  int x_decay_error_field_id_{-1};
+  int y_decay_error_field_id_{-1};
+  int z_decay_error_field_id_{-1};
+  int x_pca_error_field_id_{-1};
+  int y_pca_error_field_id_{-1};
+  int z_pca_error_field_id_{-1};
+
   int daughter_id_field_id_{-1};
   int generation_field_id_{-1};
   int g4process_field_id_{-1};

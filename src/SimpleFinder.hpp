@@ -107,7 +107,7 @@ class SimpleFinder {
   }
 
   static KFPTrack ToKFPTrack(const KFParticle& particle);
-  void SetKFParticleEnergy(KFParticle& particle, int pdg) const;
+  static void SetKFParticleEnergy(KFParticle& particle, int pdg) ;
 };
 
 #endif//KFPARTICLESIMPLE_KFSIMPLE_SIMPLEFINDERNEW_HPP_

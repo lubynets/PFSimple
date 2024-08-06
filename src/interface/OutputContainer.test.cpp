@@ -34,15 +34,21 @@ TEST(OutputContainer, Basics) {
   values.cos_topo = {20.f, 21.f, 22.f, 23.f};
   values.is_from_PV = true;
 
-  OutputContainer outputcontainer = OutputContainer(particle);
+  std::array<float, 3> decay_point{0.5f, -0.3f, 10.f};
+  std::array<float, 3> decay_point_error{0.05f, 0.03f, 0.1f};
+
+  OutputContainer outputcontainer = OutputContainer(particle, decay_point, decay_point_error);
   outputcontainer.SetSelectionValues(values);
 
   EXPECT_EQ(outputcontainer.GetDaughterIds().size(), 2);
   EXPECT_EQ(outputcontainer.GetDaughterIds().at(0), 27);
   EXPECT_EQ(outputcontainer.GetDaughterIds().at(1), 39);
-  EXPECT_FLOAT_EQ(outputcontainer.GetX(), 1.f);
-  EXPECT_FLOAT_EQ(outputcontainer.GetY(), 2.f);
-  EXPECT_FLOAT_EQ(outputcontainer.GetZ(), 3.f);
+  EXPECT_FLOAT_EQ(outputcontainer.GetXDecay(), 0.5f);
+  EXPECT_FLOAT_EQ(outputcontainer.GetYDecay(), -0.3f);
+  EXPECT_FLOAT_EQ(outputcontainer.GetZDecay(), 10.f);
+  EXPECT_FLOAT_EQ(outputcontainer.GetXPCA(), 1.f);
+  EXPECT_FLOAT_EQ(outputcontainer.GetYPCA(), 2.f);
+  EXPECT_FLOAT_EQ(outputcontainer.GetZPCA(), 3.f);
   EXPECT_FLOAT_EQ(outputcontainer.GetPx(), 4.f);
   EXPECT_FLOAT_EQ(outputcontainer.GetPy(), 5.f);
   EXPECT_FLOAT_EQ(outputcontainer.GetPz(), 6.f);

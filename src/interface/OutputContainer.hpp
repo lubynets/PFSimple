@@ -20,22 +20,9 @@
 class OutputContainer {
  public:
   OutputContainer() = default;
-  explicit OutputContainer(const KFParticle& particle) : daughter_ids_(particle.DaughterIds()),
-                                                         px_(particle.GetPx()),
-                                                         py_(particle.GetPy()),
-                                                         pz_(particle.GetPz()),
-                                                         mass_(particle.GetMass()),
-                                                         pdg_(particle.GetPDG()),
-                                                         pt_error_(particle.GetErrPt()),
-                                                         phi_error_(particle.GetErrPhi()),
-                                                         eta_error_(particle.GetErrEta()),
-                                                         mass_error_(particle.GetErrMass()),
-                                                         x_(particle.GetX()),
-                                                         y_(particle.GetY()),
-                                                         z_(particle.GetZ()),
-                                                         x_error_(particle.GetErrX()),
-                                                         y_error_(particle.GetErrY()),
-                                                         z_error_(particle.GetErrZ()) {}
+  explicit OutputContainer(const KFParticle& particle,
+                           std::array<float, 3> decay_point,
+                           std::array<float, 3> decay_point_err);
 
   virtual ~OutputContainer() = default;
 
@@ -61,12 +48,19 @@ class OutputContainer {
   [[nodiscard]] float GetDistanceToPVLine() const { return values_.distance_pv; }
   [[nodiscard]] float GetCosineTopo(int i) const { return values_.cos_topo[i]; }
 
-  [[nodiscard]] float GetX() const { return x_; }
-  [[nodiscard]] float GetY() const { return y_; }
-  [[nodiscard]] float GetZ() const { return z_; }
-  [[nodiscard]] float GetXError() const { return x_error_; }
-  [[nodiscard]] float GetYError() const { return y_error_; }
-  [[nodiscard]] float GetZError() const { return z_error_; }
+  [[nodiscard]] float GetXDecay() const { return x_decay_; }
+  [[nodiscard]] float GetYDecay() const { return y_decay_; }
+  [[nodiscard]] float GetZDecay() const { return z_decay_; }
+  [[nodiscard]] float GetXDecayError() const { return x_decay_error_; }
+  [[nodiscard]] float GetYDecayError() const { return y_decay_error_; }
+  [[nodiscard]] float GetZDecayError() const { return z_decay_error_; }
+
+  [[nodiscard]] float GetXPCA() const { return x_pca_; }
+  [[nodiscard]] float GetYPCA() const { return y_pca_; }
+  [[nodiscard]] float GetZPCA() const { return z_pca_; }
+  [[nodiscard]] float GetXPCAError() const { return x_pca_error_; }
+  [[nodiscard]] float GetYPCAError() const { return y_pca_error_; }
+  [[nodiscard]] float GetZPCAError() const { return z_pca_error_; }
 
   [[nodiscard]] int GetId() const { return id_; }
   [[nodiscard]] bool IsFromPV() const { return values_.is_from_PV; }
@@ -90,12 +84,19 @@ class OutputContainer {
   float eta_error_{-1.};
   float mass_error_{-1.};
 
-  float x_{-1.};
-  float y_{-1.};
-  float z_{-1.};
-  float x_error_{-1.};
-  float y_error_{-1.};
-  float z_error_{-1.};
+  float x_decay_{-1.};
+  float y_decay_{-1.};
+  float z_decay_{-1.};
+  float x_decay_error_{-1.};
+  float y_decay_error_{-1.};
+  float z_decay_error_{-1.};
+
+  float x_pca_{-1.};
+  float y_pca_{-1.};
+  float z_pca_{-1.};
+  float x_pca_error_{-1.};
+  float y_pca_error_{-1.};
+  float z_pca_error_{-1.};
 
   //  int n_hits_{-1};
 

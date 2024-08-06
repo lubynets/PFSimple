@@ -14,12 +14,18 @@ void ConverterOut::CopyParticle(const OutputContainer& kf_particle, AnalysisTree
   particle.SetField(kf_particle.GetMass(), invmass_field_id_);
   particle.SetPid(kf_particle.GetPdg());
 
-  particle.SetField(kf_particle.GetX(), x_field_id_);
-  particle.SetField(kf_particle.GetY(), x_field_id_ + 1);
-  particle.SetField(kf_particle.GetZ(), x_field_id_ + 2);
-  particle.SetField(kf_particle.GetXError(), x_field_id_ + 3);
-  particle.SetField(kf_particle.GetYError(), x_field_id_ + 4);
-  particle.SetField(kf_particle.GetZError(), x_field_id_ + 5);
+  particle.SetField(kf_particle.GetXDecay(), x_decay_field_id_);
+  particle.SetField(kf_particle.GetYDecay(), y_decay_field_id_);
+  particle.SetField(kf_particle.GetZDecay(), z_decay_field_id_);
+  particle.SetField(kf_particle.GetXPCA(), x_pca_field_id_);
+  particle.SetField(kf_particle.GetYPCA(), y_pca_field_id_);
+  particle.SetField(kf_particle.GetZPCA(), z_pca_field_id_);
+  particle.SetField(kf_particle.GetXDecayError(), x_decay_error_field_id_);
+  particle.SetField(kf_particle.GetYDecayError(), y_decay_error_field_id_);
+  particle.SetField(kf_particle.GetZDecayError(), z_decay_error_field_id_);
+  particle.SetField(kf_particle.GetXPCAError(), x_pca_error_field_id_);
+  particle.SetField(kf_particle.GetYPCAError(), y_pca_error_field_id_);
+  particle.SetField(kf_particle.GetZPCAError(), z_pca_error_field_id_);
 
   particle.SetField(kf_particle.GetPtError(), pt_err_field_id_);
   particle.SetField(kf_particle.GetPhiError(), pt_err_field_id_ + 1);
@@ -108,7 +114,18 @@ void ConverterOut::Init() {
 
   AnalysisTree::BranchConfig out_particles(out_branch, AnalysisTree::DetType::kParticle);
   out_particles.AddField<float>("mass_inv", "Invariant mass of the candidate, GeV/c^2");
-  out_particles.AddFields<float>({"x", "y", "z", "x_error", "y_error", "z_error"}, "Position and its error, cm");
+  out_particles.AddField<float>("x_decay", "X coordinate of the decay point of the candidate, cm");
+  out_particles.AddField<float>("y_decay", "Y coordinate of the decay point of the candidate, cm");
+  out_particles.AddField<float>("z_decay", "Z coordinate of the decay point of the candidate, cm");
+  out_particles.AddField<float>("x_pca", "X coordinate of the point of candidate's closest approach to the primary vertex, cm");
+  out_particles.AddField<float>("y_pca", "Y coordinate of the point of candidate's closest approach to the primary vertex, cm");
+  out_particles.AddField<float>("z_pca", "Z coordinate of the point of candidate's closest approach to the primary vertex, cm");
+  out_particles.AddField<float>("x_decay_err", "Error of x_decay, cm");
+  out_particles.AddField<float>("y_decay_err", "Error of y_decay, cm");
+  out_particles.AddField<float>("z_decay_err", "Error of z_decay, cm");
+  out_particles.AddField<float>("x_pca_err", "Error of x_pca, cm");
+  out_particles.AddField<float>("y_pca_err", "Error of y_pca, cm");
+  out_particles.AddField<float>("z_pca_err", "Error of z_pca, cm");
   out_particles.AddFields<float>({"pT_err", "phi_err", "eta_err", "mass_err"}, "Momentum error");
 
   if (decay_.GetNDaughters() == 3) {
@@ -214,7 +231,18 @@ void ConverterOut::InitIndexes() {
   auto branch_conf_sim_event = config_->GetBranchConfig(sim_events_name_);
   b_field_id_ = branch_conf_sim_event.GetFieldId("b");
 
-  x_field_id_ = out_branch_reco.GetFieldId("x");
+  x_decay_field_id_ = out_branch_reco.GetFieldId("x_decay");
+  y_decay_field_id_ = out_branch_reco.GetFieldId("y_decay");
+  z_decay_field_id_ = out_branch_reco.GetFieldId("z_decay");
+  x_pca_field_id_ = out_branch_reco.GetFieldId("x_pca");
+  y_pca_field_id_ = out_branch_reco.GetFieldId("y_pca");
+  z_pca_field_id_ = out_branch_reco.GetFieldId("z_pca");
+  x_decay_error_field_id_ = out_branch_reco.GetFieldId("x_decay_err");
+  y_decay_error_field_id_ = out_branch_reco.GetFieldId("y_decay_err");
+  z_decay_error_field_id_ = out_branch_reco.GetFieldId("z_decay_err");
+  x_pca_error_field_id_ = out_branch_reco.GetFieldId("x_pca_err");
+  y_pca_error_field_id_ = out_branch_reco.GetFieldId("y_pca_err");
+  z_pca_error_field_id_ = out_branch_reco.GetFieldId("z_pca_err");
   daughter_id_field_id_ = out_branch_reco.GetFieldId("daughter1_id");
   pt_err_field_id_ = out_branch_reco.GetFieldId("pT_err");
 

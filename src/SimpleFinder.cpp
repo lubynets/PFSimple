@@ -176,7 +176,7 @@ KFPTrack SimpleFinder::ToKFPTrack(const KFParticle& particle) {
   return track;
 }
 
-void SimpleFinder::SetKFParticleEnergy(KFParticle& particle, int pdg) const {
+void SimpleFinder::SetKFParticleEnergy(KFParticle& particle, int pdg) {
   const KFPTrack& track = ToKFPTrack(particle);
   particle = KFParticle(track, pdg);
 }
@@ -280,7 +280,18 @@ void SimpleFinder::SaveParticle(KFParticleSIMD& particle_simd, const Decay& deca
   particle_simd.GetKFParticle(particle, 0);
   particle.SetPDG(decay.GetMother().GetPdg());
 
-  OutputContainer mother(particle);
+  std::array<float, 3> decay_point = {particle.GetX(), particle.GetY(), particle.GetZ()};
+  std::array<float, 3> decay_point_err = {particle.GetErrX(), particle.GetErrY(), particle.GetErrZ()};
+
+  // transport reconstructed candidate to the primary vertex
+  KFVertex prim_vx_tmp = prim_vx_;
+  const KFParticleSIMD prim_vx_Simd(prim_vx_tmp);
+  const float_v point[3] = {prim_vx_Simd.X(), prim_vx_Simd.Y(), prim_vx_Simd.Z()};
+  particle_simd.TransportToPoint(point);
+  particle_simd.GetKFParticle(particle, 0);
+  particle.SetPDG(decay.GetMother().GetPdg());
+
+  OutputContainer mother(particle, decay_point, decay_point_err);
   mother.SetSelectionValues(values_);
 
   output_.emplace_back(mother);
