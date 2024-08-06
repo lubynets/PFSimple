@@ -66,12 +66,10 @@ class ConverterOut : public AnalysisTree::Task {
   std::string sim_events_name_{"SimEventHeader"};
 
   AnalysisTree::Particles* mc_particles_{nullptr};
-  AnalysisTree::TrackDetector* rec_tracks_{nullptr};
   AnalysisTree::Matching* rec_to_mc_{nullptr};
   AnalysisTree::EventHeader* sim_events_{nullptr};
   AnalysisTree::Cuts* output_cuts_{nullptr};
   Decay decay_{};
-  //   int pid_mode_{0};
 
   std::vector<OutputContainer> candidates_;
 
@@ -90,6 +88,7 @@ class ConverterOut : public AnalysisTree::Task {
   int g4process_field_id_w_{-1};
   int pt_err_field_id_{-1};
 
+  int invmass_field_id_{-1};
   int chi2prim_field_id_{-1};
   int distance_field_id_{-1};
   int cosine_field_id_{-1};

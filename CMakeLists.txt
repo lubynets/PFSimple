@@ -28,7 +28,7 @@ if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif ()
 
 set(PFSimple_BUNDLED_AT OFF CACHE BOOL "Get and build AnalysisTree from official repo")
-set(PFSimple_BUNDLED_AT_VERSION "v2.4.0" CACHE STRING "Version of AnalysisTree to build")
+set(PFSimple_BUNDLED_AT_VERSION "v2.4.1" CACHE STRING "Version of AnalysisTree to build")
 set(PFSimple_BUNDLED_AT_URL "https://github.com/HeavyIonAnalysis/AnalysisTree.git" CACHE STRING "URL of AnalysisTree to build")
 set(PFSimple_BUNDLED_AT_GIT_SHALLOW ON CACHE BOOL "Use CMake GIT_SHALLOW option")
 set(PFSimple_BUILD_TESTS ON CACHE BOOL "Build tests for the PFSimple")

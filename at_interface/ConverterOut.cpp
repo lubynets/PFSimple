@@ -11,7 +11,7 @@
 void ConverterOut::CopyParticle(const OutputContainer& kf_particle, AnalysisTree::Particle& particle) const {
 
   particle.SetMomentum(kf_particle.GetPx(), kf_particle.GetPy(), kf_particle.GetPz());
-  particle.SetMass(kf_particle.GetMass());
+  particle.SetField(kf_particle.GetMass(), invmass_field_id_);
   particle.SetPid(kf_particle.GetPdg());
 
   particle.SetField(kf_particle.GetX(), x_field_id_);
@@ -107,6 +107,7 @@ void ConverterOut::Init() {
   EventBranch.AddField<float>("b", "Impact parameter, fm");
 
   AnalysisTree::BranchConfig out_particles(out_branch, AnalysisTree::DetType::kParticle);
+  out_particles.AddField<float>("mass_inv", "Invariant mass of the candidate, GeV/c^2");
   out_particles.AddFields<float>({"x", "y", "z", "x_error", "y_error", "z_error"}, "Position and its error, cm");
   out_particles.AddFields<float>({"pT_err", "phi_err", "eta_err", "mass_err"}, "Momentum error");
 
@@ -198,7 +199,6 @@ void ConverterOut::MatchWithMc(AnalysisTree::Particle& lambdarec) {
   auto& lambdasim = lambda_sim_->AddChannel(out_config->GetBranchConfig(lambda_sim_->GetId()));
 
   lambdasim.SetMomentum(simtrackmother.GetPx(), simtrackmother.GetPy(), simtrackmother.GetPz());
-  lambdasim.SetMass(simtrackmother.GetMass());
   lambdasim.SetPid(simtrackmother.GetPid());
   lambdasim.SetField(simtrackmother.GetField<int>(g4process_field_id_), g4process_field_id_w_);
   lambda_reco2sim_->AddMatch(lambdarec.GetId(), lambdasim.GetId());
@@ -226,6 +226,7 @@ void ConverterOut::InitIndexes() {
     g4process_field_id_w_ = out_branch_sim.GetFieldId("geant_process_id");
   }
 
+  invmass_field_id_ = out_branch_reco.GetFieldId("mass_inv");
   chi2prim_field_id_ = out_branch_reco.GetFieldId("chi2_prim_first");
   distance_field_id_ = out_branch_reco.GetFieldId("distance");
   cosine_field_id_ = out_branch_reco.GetFieldId("cosine_first");
