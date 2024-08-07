@@ -50,7 +50,7 @@ class ConverterOut : public AnalysisTree::Task {
   // 1 - daughters have the same mother
   // 2 - daughters have different mothers
   // 0 - at least one daughter does not have mother (e.g. primary)
-  static int DetermineMotherMCStatus(int mid1, int mid2) ;
+  static int DetermineMotherMCStatus(int mid1, int mid2);
 
   int DetermineBGType(AnalysisTree::Particle& particle);
 
@@ -99,13 +99,22 @@ class ConverterOut : public AnalysisTree::Task {
   int generation_field_id_{-1};
   int g4process_field_id_{-1};
   int g4process_field_id_w_{-1};
+
   int pt_err_field_id_{-1};
+  int phi_err_field_id_{-1};
+  int eta_err_field_id_{-1};
+  int invmass_err_field_id_{-1};
 
   int invmass_field_id_{-1};
   int chi2prim_field_id_{-1};
   int distance_field_id_{-1};
   int cosine_field_id_{-1};
+
   int chi2geo_field_id_{-1};
+  int l_field_id_{-1};
+  int l_over_dl_field_id_{-1};
+  int chi2_topo_field_id_{-1};
+  int cosine_topo_field_id_{-1};
 
   int chi2geo_sm_field_id_{-1};
   int chi2topo_sm_field_id_{-1};

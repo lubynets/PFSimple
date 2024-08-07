@@ -28,9 +28,9 @@ void ConverterOut::CopyParticle(const OutputContainer& kf_particle, AnalysisTree
   particle.SetField(kf_particle.GetZPCAError(), z_pca_error_field_id_);
 
   particle.SetField(kf_particle.GetPtError(), pt_err_field_id_);
-  particle.SetField(kf_particle.GetPhiError(), pt_err_field_id_ + 1);
-  particle.SetField(kf_particle.GetEtaError(), pt_err_field_id_ + 2);
-  particle.SetField(kf_particle.GetMassError(), pt_err_field_id_ + 3);
+  particle.SetField(kf_particle.GetPhiError(), phi_err_field_id_);
+  particle.SetField(kf_particle.GetEtaError(), eta_err_field_id_);
+  particle.SetField(kf_particle.GetMassError(), invmass_err_field_id_);
 
   for (int i = 0; i < decay_.GetNDaughters(); ++i) {
     particle.SetField(kf_particle.GetChi2Prim(i), chi2prim_field_id_ + i);
@@ -50,10 +50,10 @@ void ConverterOut::CopyParticle(const OutputContainer& kf_particle, AnalysisTree
   }
 
   particle.SetField(kf_particle.GetChi2Geo(0), chi2geo_field_id_);
-  particle.SetField(kf_particle.GetL(), chi2geo_field_id_ + 1);
-  particle.SetField(kf_particle.GetLdL(), chi2geo_field_id_ + 2);
-  particle.SetField(kf_particle.GetChi2Topo(0), chi2geo_field_id_ + 3);
-  particle.SetField(kf_particle.GetCosineTopo(0), chi2geo_field_id_ + 4);
+  particle.SetField(kf_particle.GetL(), l_field_id_);
+  particle.SetField(kf_particle.GetLdL(), l_over_dl_field_id_);
+  particle.SetField(kf_particle.GetChi2Topo(0), chi2_topo_field_id_);
+  particle.SetField(kf_particle.GetCosineTopo(0), cosine_topo_field_id_);
 }
 
 void ConverterOut::Exec() {
@@ -114,42 +114,54 @@ void ConverterOut::Init() {
 
   AnalysisTree::BranchConfig out_particles(out_branch, AnalysisTree::DetType::kParticle);
   out_particles.AddField<float>("mass_inv", "Invariant mass of the candidate, GeV/c^2");
+
   out_particles.AddField<float>("x_decay", "X coordinate of the decay point of the candidate, cm");
   out_particles.AddField<float>("y_decay", "Y coordinate of the decay point of the candidate, cm");
   out_particles.AddField<float>("z_decay", "Z coordinate of the decay point of the candidate, cm");
   out_particles.AddField<float>("x_pca", "X coordinate of the point of candidate's closest approach to the primary vertex, cm");
   out_particles.AddField<float>("y_pca", "Y coordinate of the point of candidate's closest approach to the primary vertex, cm");
   out_particles.AddField<float>("z_pca", "Z coordinate of the point of candidate's closest approach to the primary vertex, cm");
-  out_particles.AddField<float>("x_decay_err", "Error of x_decay, cm");
-  out_particles.AddField<float>("y_decay_err", "Error of y_decay, cm");
-  out_particles.AddField<float>("z_decay_err", "Error of z_decay, cm");
-  out_particles.AddField<float>("x_pca_err", "Error of x_pca, cm");
-  out_particles.AddField<float>("y_pca_err", "Error of y_pca, cm");
-  out_particles.AddField<float>("z_pca_err", "Error of z_pca, cm");
-  out_particles.AddFields<float>({"pT_err", "phi_err", "eta_err", "mass_err"}, "Momentum error");
+  out_particles.AddField<float>("x_decay_err", "Estimate of x_decay error, cm");
+  out_particles.AddField<float>("y_decay_err", "Estimate of y_decay error, cm");
+  out_particles.AddField<float>("z_decay_err", "Estimate of z_decay error, cm");
+  out_particles.AddField<float>("x_pca_err", "Estimate of x_pca error, cm");
+  out_particles.AddField<float>("y_pca_err", "Estimate of y_pca error, cm");
+  out_particles.AddField<float>("z_pca_err", "Estimate of z_pca error, cm");
+
+  out_particles.AddField<float>("pT_err", "Estimate of transverse momentum error, GeV/c");
+  out_particles.AddField<float>("phi_err", "Estimate of azimuthal angle error, rad");
+  out_particles.AddField<float>("eta_err", "Estimate of pseudorapidity error");
+  out_particles.AddField<float>("mass_inv_err", "Estimate of invariant mass error, GeV/c^2");
 
   if (decay_.GetNDaughters() == 3) {
     out_particles.AddFields<int>({"daughter1_id", "daughter2_id", "daughter3_id"}, "");
-    out_particles.AddFields<float>({"chi2_prim_first", "chi2_prim_second", "chi2_prim_third"}, "");
+    out_particles.AddFields<float>({"chi2_daughter1", "chi2_daughter2", "chi2_daughter3"}, "");
     out_particles.AddFields<float>({"distance", "distance_sv"}, "Distance between the particles, cm");
-    out_particles.AddFields<float>({"cosine_first", "cosine_second", "cosine_third"}, "Cos between mother and daughter particle");
+    out_particles.AddFields<float>({"cosine_daughter1", "cosine_daughter2", "cosine_daughter3"}, "Cosine of the angle between mother and daughter momenta");
     out_particles.AddFields<float>({"chi2_geo_sm1", "chi2_geo_sm2", "chi2_geo_sm3"}, "");
     out_particles.AddFields<float>({"chi2_topo_sm1", "chi2_topo_sm2", "chi2_topo_sm3"}, "");
     out_particles.AddFields<float>({"cosine_topo_sm1", "cosine_topo_sm2", "cosine_topo_sm3"}, "");
   } else if (decay_.GetNDaughters() == 2) {
-    out_particles.AddFields<int>({"daughter1_id", "daughter2_id"}, "");
-    out_particles.AddFields<float>({"chi2_prim_first", "chi2_prim_second"}, "");
-    out_particles.AddField<float>("distance", "Distance between the particles, cm");
-    out_particles.AddFields<float>({"cosine_first", "cosine_second"}, "Cos between mother and daughter particle");
+    out_particles.AddFields<int>({"daughter1_id", "daughter2_id"}, "Daughter's id according to enumeration in the input file with reconstructed tracks");
+    out_particles.AddFields<float>({"chi2_daughter1", "chi2_daughter2"}, "Chi2 between daughter track and primary vertex");
+    out_particles.AddField<float>("distance", "Distance of closest approach between two daughters, cm");
+    out_particles.AddFields<float>({"cosine_daughter1", "cosine_daughter2"}, "Cosine of the angle between mother and daughter momenta");
   }
 
-  out_particles.AddFields<float>({"chi2_geo", "l", "l_over_dl", "chi2_topo", "cosine_topo"}, "");
+  out_particles.AddField<float>("chi2_geo", "Chi2 between two daughter tracks");
+  out_particles.AddField<float>("l", "Signed distance along mother's trajectory from the point of closaest approach\nto the primary vertex to the decay vertex, cm");
+  out_particles.AddField<float>("l_over_dl", "Value of l divided by its error estimate");
+  out_particles.AddField<float>("chi2_topo", "Chi2 between mother track and primary vertex");
+  out_particles.AddField<float>("cosine_topo", "Cosine of the pointing angle (mother track and shortest line connecting primary and decay vertices)");
 
   AnalysisTree::BranchConfig LambdaSimBranch(out_branch_sim, AnalysisTree::DetType::kParticle);
 
   if (mc_particles_) {
-    out_particles.AddField<int>("generation", "");
-    LambdaSimBranch.AddField<int>("geant_process_id", "");
+    out_particles.AddField<int>("type", "MC-status of the candidate;\n"
+                                        "Non-positive for BG, 1 for primary particles,\n"
+                                        "2 for secondary, 3 for tertiary, etc. For details see\n"
+                                        "https://github.com/HeavyIonAnalysis/PFSimple/blob/master/docs/type_field_description.pdf");
+    LambdaSimBranch.AddField<int>("geant_process_id", "Id of the process of candidate particle production, see https://root.cern/doc/v624/TMCProcess_8h.html");
   }
 
   man->AddBranch(events_, EventBranch);
@@ -244,26 +256,34 @@ void ConverterOut::InitIndexes() {
   y_pca_error_field_id_ = out_branch_reco.GetFieldId("y_pca_err");
   z_pca_error_field_id_ = out_branch_reco.GetFieldId("z_pca_err");
   daughter_id_field_id_ = out_branch_reco.GetFieldId("daughter1_id");
+
   pt_err_field_id_ = out_branch_reco.GetFieldId("pT_err");
+  phi_err_field_id_ = out_branch_reco.GetFieldId("phi_err");
+  eta_err_field_id_ = out_branch_reco.GetFieldId("eta_err");
+  invmass_err_field_id_ = out_branch_reco.GetFieldId("mass_inv_err");
 
   if (mc_particles_) {
     auto branch_conf_sim = config_->GetBranchConfig(mc_particles_name_);
     mother_id_field_id_ = branch_conf_sim.GetFieldId("mother_id");
     g4process_field_id_ = branch_conf_sim.GetFieldId("geant_process_id");
-    generation_field_id_ = out_branch_reco.GetFieldId("generation");
+    generation_field_id_ = out_branch_reco.GetFieldId("type");
     g4process_field_id_w_ = out_branch_sim.GetFieldId("geant_process_id");
   }
 
   invmass_field_id_ = out_branch_reco.GetFieldId("mass_inv");
-  chi2prim_field_id_ = out_branch_reco.GetFieldId("chi2_prim_first");
+  chi2prim_field_id_ = out_branch_reco.GetFieldId("chi2_daughter1");
   distance_field_id_ = out_branch_reco.GetFieldId("distance");
-  cosine_field_id_ = out_branch_reco.GetFieldId("cosine_first");
+  cosine_field_id_ = out_branch_reco.GetFieldId("cosine_daughter1");
 
   chi2geo_sm_field_id_ = out_branch_reco.GetFieldId("chi2_geo_sm1");
   chi2topo_sm_field_id_ = out_branch_reco.GetFieldId("chi2_topo_sm1");
   cosine_topo_sm_field_id_ = out_branch_reco.GetFieldId("cosine_topo_sm1");
 
   chi2geo_field_id_ = out_branch_reco.GetFieldId("chi2_geo");
+  l_field_id_ = out_branch_reco.GetFieldId("l");
+  l_over_dl_field_id_ = out_branch_reco.GetFieldId("l_over_dl");
+  chi2_topo_field_id_ = out_branch_reco.GetFieldId("chi2_topo");
+  cosine_topo_field_id_ = out_branch_reco.GetFieldId("cosine_topo");
 }
 
 std::pair<int, int> ConverterOut::DetermineDaughtersMCStatus(const int daughter_rec_id, const Pdg_t mother_expected_pdg) const {
