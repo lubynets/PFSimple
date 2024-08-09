@@ -134,13 +134,18 @@ void ConverterOut::Init() {
   out_particles.AddField<float>("mass_inv_err", "Estimate of invariant mass error, GeV/c^2");
 
   if (decay_.GetNDaughters() == 3) {
-    out_particles.AddFields<int>({"daughter1_id", "daughter2_id", "daughter3_id"}, "");
-    out_particles.AddFields<float>({"chi2_daughter1", "chi2_daughter2", "chi2_daughter3"}, "");
-    out_particles.AddFields<float>({"distance", "distance_sv"}, "Distance between the particles, cm");
+    out_particles.AddFields<int>({"daughter1_id", "daughter2_id", "daughter3_id"}, "Daughter's id according to enumeration in the input file with reconstructed tracks");
+    out_particles.AddFields<float>({"chi2_daughter1", "chi2_daughter2", "chi2_daughter3"}, "Chi2 between daughter track and primary vertex");
+    out_particles.AddField<float>("distance", "Distance of closest approach between first two daughters, cm");
+    out_particles.AddField<float>("distance_sv", "Distance of closest approach between third daughter and\n"
+                                                 "temporary secondary vertex constructed from first two daughters, cm");
     out_particles.AddFields<float>({"cosine_daughter1", "cosine_daughter2", "cosine_daughter3"}, "Cosine of the angle between mother and daughter momenta");
-    out_particles.AddFields<float>({"chi2_geo_sm1", "chi2_geo_sm2", "chi2_geo_sm3"}, "");
-    out_particles.AddFields<float>({"chi2_topo_sm1", "chi2_topo_sm2", "chi2_topo_sm3"}, "");
-    out_particles.AddFields<float>({"cosine_topo_sm1", "cosine_topo_sm2", "cosine_topo_sm3"}, "");
+    out_particles.AddFields<float>({"chi2_geo_sm1", "chi2_geo_sm2", "chi2_geo_sm3"}, "Chi2 between two daughter tracks:\n"
+                                                                                     "sm1 - {first and second}, sm2 - {first and third}, sm3 - {second and third}");
+    out_particles.AddFields<float>({"chi2_topo_sm1", "chi2_topo_sm2", "chi2_topo_sm3"}, "Chi2 between intermediate mother track, constructed from 2 daughters, and primary vertex:\n"
+                                                                                        "sm1 - {first and second}, sm2 - {first and third}, sm3 - {second and third}");
+    out_particles.AddFields<float>({"cosine_topo_sm1", "cosine_topo_sm2", "cosine_topo_sm3"}, "Cosine of the pointing angle (intermediate mother track, constructed from 2 daughters, and shortest line connecting primary and decay vertices):\n"
+                                                                                              "sm1 - {first and second}, sm2 - {first and third}, sm3 - {second and third}");
   } else if (decay_.GetNDaughters() == 2) {
     out_particles.AddFields<int>({"daughter1_id", "daughter2_id"}, "Daughter's id according to enumeration in the input file with reconstructed tracks");
     out_particles.AddFields<float>({"chi2_daughter1", "chi2_daughter2"}, "Chi2 between daughter track and primary vertex");
