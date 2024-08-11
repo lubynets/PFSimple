@@ -76,49 +76,49 @@ class ConverterOut : public AnalysisTree::Task {
   PFSimpleTask* pfsimple_task_{nullptr};
 
   // field ids of simulated events
-  int b_field_id_{-1};
+  int b_field_id_{AnalysisTree::UndefValueInt};
 
   // field ids of input simulated mother
-  int mother_id_field_id_{-1};
+  int mother_id_field_id_{AnalysisTree::UndefValueInt};
 
-  int x_decay_field_id_{-1};
-  int y_decay_field_id_{-1};
-  int z_decay_field_id_{-1};
-  int x_pca_field_id_{-1};
-  int y_pca_field_id_{-1};
-  int z_pca_field_id_{-1};
+  int x_decay_field_id_{AnalysisTree::UndefValueInt};
+  int y_decay_field_id_{AnalysisTree::UndefValueInt};
+  int z_decay_field_id_{AnalysisTree::UndefValueInt};
+  int x_pca_field_id_{AnalysisTree::UndefValueInt};
+  int y_pca_field_id_{AnalysisTree::UndefValueInt};
+  int z_pca_field_id_{AnalysisTree::UndefValueInt};
 
-  int x_decay_error_field_id_{-1};
-  int y_decay_error_field_id_{-1};
-  int z_decay_error_field_id_{-1};
-  int x_pca_error_field_id_{-1};
-  int y_pca_error_field_id_{-1};
-  int z_pca_error_field_id_{-1};
+  int x_decay_error_field_id_{AnalysisTree::UndefValueInt};
+  int y_decay_error_field_id_{AnalysisTree::UndefValueInt};
+  int z_decay_error_field_id_{AnalysisTree::UndefValueInt};
+  int x_pca_error_field_id_{AnalysisTree::UndefValueInt};
+  int y_pca_error_field_id_{AnalysisTree::UndefValueInt};
+  int z_pca_error_field_id_{AnalysisTree::UndefValueInt};
 
-  int daughter_id_field_id_{-1};
-  int generation_field_id_{-1};
-  int g4process_field_id_{-1};
+  int daughter_id_field_id_{AnalysisTree::UndefValueInt};
+  int generation_field_id_{AnalysisTree::UndefValueInt};
+  int g4process_field_id_{AnalysisTree::UndefValueInt};
   int g4process_field_id_w_{-1};
 
-  int pt_err_field_id_{-1};
-  int phi_err_field_id_{-1};
-  int eta_err_field_id_{-1};
-  int invmass_err_field_id_{-1};
+  int pt_err_field_id_{AnalysisTree::UndefValueInt};
+  int phi_err_field_id_{AnalysisTree::UndefValueInt};
+  int eta_err_field_id_{AnalysisTree::UndefValueInt};
+  int invmass_err_field_id_{AnalysisTree::UndefValueInt};
 
-  int invmass_field_id_{-1};
-  int chi2prim_field_id_{-1};
-  int distance_field_id_{-1};
-  int cosine_field_id_{-1};
+  int invmass_field_id_{AnalysisTree::UndefValueInt};
+  int chi2prim_field_id_{AnalysisTree::UndefValueInt};
+  int distance_field_id_{AnalysisTree::UndefValueInt};
+  int cosine_field_id_{AnalysisTree::UndefValueInt};
 
-  int chi2geo_field_id_{-1};
-  int l_field_id_{-1};
-  int l_over_dl_field_id_{-1};
-  int chi2_topo_field_id_{-1};
-  int cosine_topo_field_id_{-1};
+  int chi2geo_field_id_{AnalysisTree::UndefValueInt};
+  int l_field_id_{AnalysisTree::UndefValueInt};
+  int l_over_dl_field_id_{AnalysisTree::UndefValueInt};
+  int chi2_topo_field_id_{AnalysisTree::UndefValueInt};
+  int cosine_topo_field_id_{AnalysisTree::UndefValueInt};
 
-  int chi2geo_sm_field_id_{-1};
-  int chi2topo_sm_field_id_{-1};
-  int cosine_topo_sm_field_id_{-1};
+  int chi2geo_sm_field_id_{AnalysisTree::UndefValueInt};
+  int chi2topo_sm_field_id_{AnalysisTree::UndefValueInt};
+  int cosine_topo_sm_field_id_{AnalysisTree::UndefValueInt};
 
   bool is_detailed_bg_{false};
 };
