@@ -30,6 +30,8 @@ class ConverterOut : public AnalysisTree::Task {
   void SetRecTracksName(const std::string& name) { rec_tracks_name_ = name; }
   void SetSimTracksName(const std::string& name) { mc_particles_name_ = name; }
   void SetIsWriteDetailedBG(bool is=true) { is_detailed_bg_ = is; }
+  void SetIsSaveTopologicalVariables(bool is=true) { is_save_topo_vars_ = is; }
+  void SetIsSaveErrorValues(bool is=true) { is_save_error_values_ = is; }
 
  protected:
   void InitIndexes();
@@ -121,6 +123,8 @@ class ConverterOut : public AnalysisTree::Task {
   int cosine_topo_sm_field_id_{AnalysisTree::UndefValueInt};
 
   bool is_detailed_bg_{false};
+  bool is_save_topo_vars_{true};
+  bool is_save_error_values_{false};
 };
 
 #endif//KFPARTICLESIMPLE_ANALYSISTREEINTERFACE_CONVERTEROUT_H_
